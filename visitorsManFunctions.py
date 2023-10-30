@@ -150,14 +150,14 @@ def timeDepart():
         current = datetime.datetime.now()
         try:
             print("Time of departure: ")
-            timeHr = int(input("Hour: "))
+            timeHr = int(input("Hour(24-hour format): "))
             timeMin = int(input("Minute: "))
             userTime = f"{timeHr:02d}:{timeMin:02d} {current.strftime('%p')}"
             print(userTime)
         except (ValueError, Exception):
             print("Please enter a valid number")
         else:
-            if 1 <= timeHr <= 12 and 0 <= timeMin < 60:
+            if 1 <= timeHr <= 24 and 0 <= timeMin < 60:
                 if (current.hour < timeHr) or (current.hour == timeHr and current.minute < timeMin):
                     print("Valid departure time")
                     return userTime
