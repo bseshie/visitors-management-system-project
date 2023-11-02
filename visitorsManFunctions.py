@@ -55,7 +55,7 @@ class Visitor:
         current = datetime.datetime.now()
         date = current.strftime("%d/%m/%y")
         self.__date = date
-        print(date)
+        print("Date: ",date)
         
     def set_timeArrive(self):
         current = datetime.datetime.now()
