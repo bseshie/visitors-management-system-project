@@ -2,6 +2,9 @@ import re
 import datetime
 from PIL import Image
 import pytesseract
+import sys
+import time
+
 
 class Visitor:
     def __init__(self):
@@ -20,7 +23,7 @@ class Visitor:
             name = input("Name: ")
             visName = name.capitalize().replace(" ", "")
             if visName.isalpha():
-                self.__visitorsName = visName
+                self.__visitorsName = name
                 break
             else:
                 print("Name should include only letters! ")
@@ -55,13 +58,13 @@ class Visitor:
         current = datetime.datetime.now()
         date = current.strftime("%d/%m/%y")
         self.__date = date
-        print("Date: ",date)
+        #print("Date: ",date)
         
     def set_timeArrive(self):
         current = datetime.datetime.now()
         time = current.strftime("%I:%M %p") 
         self.__arrival = time
-        print("Time of arrival:", time)
+        #print("Time of arrival:", time)
         
     def set_departureTime(self):
         self.__departure = timeDepart()
@@ -76,7 +79,7 @@ class Visitor:
         for match in matches:
             if match[0] == 'A':
                 self.__idNumber = match
-                print(f"ID number is {match}") 
+                #print(f"ID number is {match}") 
                 break
     
     def get_visitorsName(self):
@@ -139,8 +142,9 @@ def purpose():
         return "Appointment or Meeting"
     elif choice == 6:  
         while True:
-            reason = input("Purpose of visit: ").lower().replace(" ", "")
-            if reason.isalpha():
+            reason = input("Purpose of visit: ")
+            purposeVisit = reason.lower().replace(" ", "").replace("'" , "").replace("," , "").replace("." , "")
+            if purposeVisit.isalpha():
                 return reason
             else:
                 print("Reason should include only letters! ")
@@ -150,9 +154,9 @@ def timeDepart():
         current = datetime.datetime.now()
         try:
             print("Time of departure: ")
-            timeHr = int(input("Hour(24-hour format): "))
+            timeHr = int(input("Hour(in 24 hour format): "))
             timeMin = int(input("Minute: "))
-            userTime = f"{timeHr:02d}:{timeMin:02d} {current.strftime('%p')}"
+            userTime = f"{timeHr:02d}:{timeMin:02d}"
             print(userTime)
         except (ValueError, Exception):
             print("Please enter a valid number")
@@ -166,25 +170,132 @@ def timeDepart():
             else:
                 print("Invalid time")
     
-
 def employee():
     employeeList = {
-        'A': 'John Doe', 'B' : 'Susan Meyers' , 'C' : 'Emma Taylor' , 'D' : 'James Coleman' ,
-        'E':'Mark Dan' , 'F' : 'Elon Musk' , 'G' : 'Aliko Dangote' , 'H' : 'Kevin Okyere'
+    'employee 1': {
+        'name': 'John Doe',
+        'job_title': 'Software developer',
+        'department': 'Technology',
+        'gender': 'Male',
+        'email': 'johndoe@gmail.com'
+    },
+    'employee 2': {
+        'name': 'Susan Meyers',
+        'job_title': 'Systems engineer',
+        'department': 'Technology',
+        'gender': 'Female',
+        'email': 'susanmey2@gmail.com'
+    },
+    'employee 3': {
+        'name': 'Emma Taylor',
+        'job_title': 'Marketing Manager',
+        'department': 'Marketing',
+        'gender': 'Female',
+        'email': 'tayemma@gmail.com'
+    },
+    'employee 4': {
+        'name': 'James Coleman',
+        'job_title': 'Chief Operating Officer',
+        'department': 'Management',
+        'gender': 'Male',
+        'email': 'jcoleman1@gmail.com'
+    },
+    'employee 5': {
+        'name': 'Mark Dan',
+        'job_title': 'Auditor',
+        'department': 'Finance',
+        'gender': 'Male',
+        'email': 'markdan@gmail.com'
+    },
+    'employee 6': {
+        'name': 'Elon Musk',
+        'job_title': 'Finance Manager',
+        'department': 'Finance',
+        'gender': 'Male',
+        'email': 'the_elonmusk@gmail.com'
+    },
+    'employee 7': {
+        'name': 'Aliko Dangote',
+        'job_title': 'Chief Financial Officer',
+        'department': 'Finance',
+        'gender': 'Male',
+        'email': 'chief_alikodangote@gmail.com'
+    },
+    'employee 8': {
+        'name': 'Kevin Okyere',
+        'job_title': 'Senior sales executive',
+        'department': 'Sales',
+        'gender': 'Male',
+        'email': 'kevinokyere1@gmail.com'
+    },
+    'employee 9': {
+        'name': 'Belinda Seshie',
+        'job_title': 'Chief Executive Officer',
+        'department': 'Management',
+        'gender': 'Female',
+        'email': 'thebelseshie@gmail.com'
+    },
+    'employee 10': {
+        'name': 'Danielle Spencer',
+        'job_title': 'Human Resource Manager',
+        'department': 'Human Resource',
+        'gender': 'Female',
+        'email': 'daniellespencer3@gmail.com'
+    },
+    'employee 11': {
+        'name': 'Emma Taylor',
+        'job_title': 'Cloud engineer',
+        'department': 'Technology',
+        'gender': 'Male',
+        'email': 'emmatay12@gmail.com'
+    },
+    'employee 12': {
+        'name': 'James Coleman',
+        'job_title': 'Data Scientist',
+        'department': 'Technology',
+        'gender': 'Male',
+        'email': 'jcole254@gmail.com'
+    }
 }
-
+    
+    infoList = []
     while True:
         nameVisitee = input("Who are you visiting?: ")
+        
         if nameVisitee.replace(" ","").isalpha():
-            for name in employeeList.values():
-                if nameVisitee.replace(" ","").lower() == name.replace(" ", "").lower():
-                    print(f"You are visiting: {name}")
-                    return name
-            print("Employee / person not found! ")
+            found = False
+            for employeeInfo in employeeList.values():
+                if nameVisitee.replace(" ","").lower() in employeeInfo['name'].replace(" ","").lower():
+                    infoList.append(employeeInfo)
+                    found = True
+
+            if not found:
+                print("Employee not found!")
+            elif len(infoList) == 1:
+                print(infoList)
+                print(f"You are visiting {infoList[0]['name']}.")
+                return infoList[0]['name']
+                #break
+            else:
+                print("Multiple employees found: ")
+                for idx, employee in enumerate(infoList, start=1):
+                    print(f"{idx}.{employee['name']} ,{employee['job_title']}, {employee['department']}, {employee['gender']}, {employee['email']}")
+                    
+                try:
+                    choice = int(input("Please enter the number corresponding to the employee you are visiting: "))
+                    if 1 <= choice <= len(infoList):
+                        selectedEmployee = infoList[choice - 1]['name']
+                        print(f"You selected option {choice}")
+                        return selectedEmployee
+                        #break
+                    else:
+                        print("Invalid choice. Please try again.")
+                except ValueError:
+                    print("Invalid input. Please enter a number.")
         else:
             print("Employee name should include only letters")
     
-    
+      
 def imageToText(imagePath):
     try:
         # Open the image using Pillow (PIL)
@@ -196,14 +307,41 @@ def imageToText(imagePath):
         return str(e)
     
     
-# def emailOrContact():
-#         choice = input("Email or contact? (e/c): ").lower()
-        
-#         if choice == "e":
-#             return Visitor.get_visitorsEmail()
-#         elif choice == "c":
-#             return Visitor.get_userContact()
-#         else:
-#             print("Invalid choice. Please enter 'e' for email or 'c' for contact.")
-#             return Visitor.get_emailOrContact()    
-                
+def mainMenu():
+    print("Welcome!")
+    print("========Administrator or Visitor?========")
+    print("1. Administrator \n2. Visitor / Guest \n0. Exit")    
+
+    while True: 
+        try: 
+            option = int(input("Enter your choice: "))
+            if 0 <= option <= 2:
+                return option
+            else:
+                print("Invalid input. Choice should be from 1-2")
+        except ValueError:
+            print("Invalid input. Choice should be from 1-2")
+            
+
+def loading_bar_animation():
+    total_progress = 100  # Total progress value (e.g., 100%)
+    bar_width = 50  # Width of the loading bar in characters
+
+    for progress in range(total_progress + 1):
+        completed_width = bar_width * progress // total_progress
+
+        sys.stdout.write("\r[")
+        for i in range(bar_width):
+            if i < completed_width:
+                sys.stdout.write("=")
+            else:
+                sys.stdout.write(" ")
+        sys.stdout.write("] {}%".format(progress))
+        sys.stdout.flush()
+
+        # Add a small delay to control the speed of the animation
+        time.sleep(0.05)
+
+    print()  # Move to the next line after the loading bar is complete
+    
+    
